@@ -1,0 +1,5 @@
+# Ink bytes32 claim for the first root attack
+ink_claim =
+
+# Optimism bytes32 claim for the first root attack
+op_claim =

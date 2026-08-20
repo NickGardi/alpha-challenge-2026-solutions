@@ -1,0 +1,2 @@
+# Hash of the transaction on the source chain that set the withdrawal in motion
+origin_tx =
