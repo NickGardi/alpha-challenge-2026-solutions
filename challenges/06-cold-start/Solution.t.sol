@@ -27,12 +27,44 @@ contract ColdStart is Test {
         IInbox(INBOX).setAllowListEnabled(false);
     }
 
+    address constant SWAP_ROUTER = 0xCaf681a66D020601342297493863E78C959E5cb2;
+    address constant WETH = 0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73;
+    uint24 constant POOL_FEE = 10000;
+
     function test_Solution() public {
         vm.selectFork(l1Fork);
         vm.recordLogs();
         vm.startBroadcast(user);
 
-        // your code
+        uint256 l2CallValue = 2 ether;
+        uint256 maxSubmissionCost = 1 ether;
+
+        bytes memory swapCalldata = abi.encodeWithSignature(
+            "exactInputSingle((address,address,uint24,address,uint256,uint256,uint160))",
+            WETH,
+            CASHCAT,
+            POOL_FEE,
+            user,
+            l2CallValue,
+            uint256(1_000_000e18),
+            uint160(0)
+        );
+
+        uint256 gasLimit = 1_000_000;
+        uint256 maxFeePerGas = 0.1 gwei;
+
+        IInboxFull(INBOX).createRetryableTicket{
+            value: l2CallValue + maxSubmissionCost + gasLimit * maxFeePerGas
+        }(
+            SWAP_ROUTER,
+            l2CallValue,
+            maxSubmissionCost,
+            user,
+            user,
+            gasLimit,
+            maxFeePerGas,
+            swapCalldata
+        );
 
         vm.stopBroadcast();
 

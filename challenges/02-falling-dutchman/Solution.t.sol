@@ -25,7 +25,6 @@ contract FallingDutchman is Test {
 
         vm.warp(auctionStart + 24 hours - 1);
 
-        // Old GNT has no approve/transferFrom — credit DutchX balance directly.
         stdstore.target(DUTCHX).sig("balances(address,address)").with_key(GNT).with_key(user).checked_write(1 ether);
 
         vm.startBroadcast(user);
